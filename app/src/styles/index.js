@@ -25,3 +25,8 @@ export const Button = styled.TouchableOpacity`
   background: ${(props) =>
     props.type ? theme.colors[props.type] : theme.colors.primary};
 `;
+
+export const ButtonText = styled.Text`
+  text-align: center;
+  color: ${(props) => (props.color ? theme.colors[props.color] : '#000')};
+`;
