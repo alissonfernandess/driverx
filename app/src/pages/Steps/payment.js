@@ -6,7 +6,6 @@ import {
   Container,
   Title,
   SubTitle,
-  Input,
   Spacer,
   Button,
   ButtonText,
