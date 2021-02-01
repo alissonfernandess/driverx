@@ -13,6 +13,8 @@
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-credit-card-input": "^0.4.1",
+    "react-native-maps": "0.27.1",
+    "react-native-pulse": "^1.0.7",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {

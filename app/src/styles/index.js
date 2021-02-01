@@ -2,6 +2,9 @@ import styled from 'styled-components/native';
 
 import theme from './theme.json';
 
+import MapView from 'react-native-maps';
+import Pulse from 'react-native-pulse';
+
 export const Container = styled.View`
   flex: 1;
   background: ${(props) =>
@@ -10,7 +13,7 @@ export const Container = styled.View`
   justify-content: ${(props) => props.justify || 'center'};
   padding: ${(props) => props.padding || 0}px;
   width: 100%;
-  align-items: ${(props) => props.aling || 'center'};
+  align-items: ${(props) => props.align || 'center'};
   max-width: ${(props) => props.width || '100%'};
   max-height: ${(props) => (props.height ? props.height + 'px' : 'auto')};
   position: ${(props) => props.position || 'relative'};
@@ -32,6 +35,8 @@ export const ButtonText = styled.Text`
 `;
 
 export const Title = styled.Text`
+  font-size: 20px;
+  font-weight: bold;
   text-align: center;
   color: ${(props) => (props.color ? theme.color[props.color] : '#000')};
 `;
@@ -79,3 +84,38 @@ export const AddressItem = styled.TouchableOpacity`
   padding: 5px 0;
   align-items: flex-start;
 `;
+
+export const Map = styled(MapView)`
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  opacity: ${(props) => (props.disabled ? 0.2 : 1)};
+`;
+
+export const Avatar = styled.Image.attrs({
+  elevation: 50,
+})`
+  width: ${(props) => (props.small ? '35px' : '50px')};
+  height: ${(props) => (props.small ? '35px' : '50px')};
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background: ${theme.colors.muted};
+  border-radius: ${(props) => (props.small ? '35px' : '50px')};
+`;
+
+export const VerticalSeparator = styled.View`
+  width: 1px;
+  height: 100%;
+  background-color: ${theme.colors.muted};
+`;
+
+export const Bullet = styled.View`
+  width: 8px;
+  height: 8px;
+  border-radius: 7px;
+  margin-top: 2px;
+  background: ${(props) => (props.destination ? '#ff2929' : '#00eb5e')};
+`;
+
+export const PulseCircle = styled(Pulse).attrs({
+  color: theme.colors.primary,
+})``;
