@@ -4,8 +4,8 @@ const socialService = new OAuthManager('Driverx');
 
 socialService.configure({
   facebook: {
-    client_id: '1358642924471626',
-    client_secret: '51153e8ad66f9341692d0343ec53e1a2',
+    client_id: 'SEU_CLIENT_ID',
+    client_secret: 'SEU_CLIENT_SECRET',
   },
 });
 

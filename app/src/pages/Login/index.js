@@ -11,7 +11,7 @@ import {Container, Button, ButtonText} from '../../styles';
 const Login = () => {
   const login = async () => {
     try {
-      const auth = socialService.authorize('facebook', {
+      const auth = await socialService.authorize('facebook', {
         scopes: 'email',
       });
 
@@ -38,7 +38,7 @@ const Login = () => {
         zIndex={9}>
         <Image source={logo} />
 
-        <Button type="info">
+        <Button type="info" onPress={() => login()}>
           <ButtonText>Fazer Login com Facebook</ButtonText>
         </Button>
 
