@@ -2,6 +2,10 @@ import React from 'react';
 import {Image} from 'react-native';
 
 import socialService from '../../services/socialService';
+import facebookApi from '../../services/facebook';
+
+import {useDispatch} from 'react-redux';
+import {updateUser} from '../../store/modules/app/actions';
 
 import logo from '../../assets/logo.png';
 import bgBottom from '../../assets/bg-bottom-login.png';
@@ -9,19 +13,34 @@ import bgBottom from '../../assets/bg-bottom-login.png';
 import {Container, Button, ButtonText} from '../../styles';
 
 const Login = () => {
+  const dispatch = useDispatch();
+
   const login = async () => {
     try {
       const auth = await socialService.authorize('facebook', {
         scopes: 'email',
       });
 
-      const user = await socialService.makeRequest(
-        'facebook',
-        '/me?fileds=id, name, email',
+      // erro ao pegar email e token
+      // const user = await socialService.makeRequest(
+      //   'facebook',
+      //   '/me?fileds=id, name, email',
+      // );
+
+      const user = await facebookApi.get(
+        `/me?fields=id,name,email&access_token=${auth.response.credentials.accessToken}`,
       );
 
-      console.tron.log(auth);
-      console.tron.log(user);
+      // redux updateUser
+      dispatch(
+        updateUser({
+          fbId: user.data.id,
+          nome: user.data.name,
+          email: user.data.email,
+          tipo: 'M',
+          acessToken: auth.response.credentials.accessToken,
+        }),
+      );
     } catch (error) {
       alert(error.message);
     }
