@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const database = require('./database');
 const http = require('http');
 
 app.use(morgan('dev'));
