@@ -9,6 +9,7 @@ const PaymentMethod = require('../models/paymentMethod');
 const Ride = require('../models/ride');
 
 const pagarme = require('../services/pagarme');
+const googleMaps = require('../services/googleMaps');
 const keys = require('../utils/keys.json');
 
 // criar usuário
@@ -124,6 +125,73 @@ router.put('/socket/:id', async (req, res) => {
   }
 });
 
+// pegar os endereços
+router.get('/address/:address', async (req, res) => {
+  try {
+    const list = await googleMaps.getPlaces(
+      encodeURIComponent(req.params.address)
+    );
+  
+    if (list.error) {
+      throw list.message;
+    }
+  
+    const addressList = list.data.predictions.map((addr) => {
+      const {
+        place_id,
+        description,
+        structured_formatting: { secondary_text },
+      } = addr;
+  
+      return { place_id, description, secondary_text};
+    });
+
+    res.json({error: false, list: addressList});
+  } catch (err) {
+    res.json({error: true, message: err.message});
+  }
+
+});
+
+// exibindo distância e valor da corrida
+router.post('/pre-ride', async (req, res) => {
+  try {
+    const {origin, destination} = req.body;
+
+    const routeRequest = await googleMaps.getRoutess(origin, destination);
+
+    if (routeRequest.error) {
+      throw routeRequest.message;
+    }
+
+    const { 
+      distance,
+      duration,
+      star_address,
+      end_address,
+      steps,
+    } = routeRequest.data.routes[0].legs[0];
+
+    const route = steps.map((step) => {
+      return [
+        {
+          latitude: step.start_location.lat,
+          longitude: step.start_location.lng,
+        },
+        {
+          latitude: step.end_location.lat,
+          longitude: step.end_location.lng,
+        },
+      ]
+    }).flat(1);
+
+    const price = ((distance.value / 1000) * 2.67).toFixed(2);
+
+    res.json({error: false, info: {distance, duration, start_address, route, price}});
+  } catch (err) {
+    res.json({error: true, message: err.message});
+  }
+})
 
 
 module.exports = router;
