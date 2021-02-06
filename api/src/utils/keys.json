@@ -1,0 +1,6 @@
+{
+    "api_key": "SUA_KEY_DO_PAGARME",
+    "google_maps_api": "SUA_KEY_DO_GOOGLE_MAPS",
+    "recipient_id": "SEU_RECIPIENT_DO_PAGARME",
+    "app_fee": 15
+}
