@@ -11,6 +11,7 @@ const Ride = require('../models/ride');
 const pagarme = require('../services/pagarme');
 const keys = require('../utils/keys.json');
 
+// criar usuário
 router.post('/signup', async (req, res) => {
   // conectando ao banco usando replicas
   const db = mongoose.connection;
@@ -74,5 +75,55 @@ router.post('/signup', async (req, res) => {
     res.json({error: true, message: err.message});
   }
 });
+
+// verificar se contém usuário
+router.post('/check-user', async (req, res) => {
+  try {
+    const user = await User.findOne({
+      email: req.body.email,
+    });
+
+    res.json({error: false, user});
+  } catch (err) {
+    res.json({error: true, message: err.message});
+  }
+});
+
+// atualização localização
+router.put('/location/:id', async (req, res) => {
+  try {
+    const {id} = req.params;
+    const {coordinates} = req.body;
+
+    await User.findByIdAndUpdate(id, {
+      localiton: {
+        type: 'Point',
+        coordinates,
+      }
+    });
+
+    res.json({error: false})
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+// atualização socket usuário
+router.put('/socket/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { socketId } = req.body;
+
+    await User.findByIdAndUpdate(id, {
+      socketId,
+    });
+
+    res.json({ error: false });
+  }catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+
 
 module.exports = router;
