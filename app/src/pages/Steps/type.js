@@ -16,7 +16,7 @@ import {
   ButtonText,
 } from '../../styles';
 
-const Type = () => {
+const Type = ({navigation}) => {
   // get INITIAL_STATE user reducer
   const {user} = useSelector((state) => state.user);
 
@@ -24,6 +24,11 @@ const Type = () => {
 
   const toogleType = (tipo) => {
     dispatch(updateUser({tipo}));
+  };
+
+  const nextPage = () => {
+    const route = user.tipo === 'M' ? 'Car' : 'Payment';
+    navigation.navigate(route);
   };
 
   return (
@@ -52,7 +57,7 @@ const Type = () => {
       </Container>
 
       <Container height={70}>
-        <Button>
+        <Button onPress={() => nextPage()}>
           <ButtonText>Próximo Passo</ButtonText>
         </Button>
       </Container>
