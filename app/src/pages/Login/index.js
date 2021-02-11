@@ -7,14 +7,14 @@ import socialService from '../../services/socialService';
 import facebookApi from '../../services/facebook';
 
 import {useDispatch} from 'react-redux';
-import {updateUser} from '../../store/modules/app/actions';
+import {updateUser, checkUser} from '../../store/modules/app/actions';
 
 import logo from '../../assets/logo.png';
 import bgBottom from '../../assets/bg-bottom-login.png';
 
 import {Container, Button, ButtonText} from '../../styles';
 
-const Login = () => {
+const Login = ({navigator}) => {
   const dispatch = useDispatch();
 
   const login = async () => {
@@ -33,7 +33,7 @@ const Login = () => {
         `/me?fields=id,name,email&access_token=${auth.response.credentials.accessToken}`,
       );
 
-      // redux updateUser
+      // updateUser reducer
       dispatch(
         updateUser({
           fbId: user.data.id,
@@ -43,6 +43,9 @@ const Login = () => {
           acessToken: auth.response.credentials.accessToken,
         }),
       );
+
+      // check user
+      dispatch(checkUser());
     } catch (error) {
       alert(error.message);
     }
@@ -60,7 +63,9 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    checkLogin();
+  }, []);
 
   return (
     <Container color="info50" justify="flex-end">
