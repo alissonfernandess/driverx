@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Image} from 'react-native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import socialService from '../../services/socialService';
 import facebookApi from '../../services/facebook';
@@ -45,6 +47,20 @@ const Login = () => {
       alert(error.message);
     }
   };
+
+  const checkLogin = async () => {
+    // get user
+    const user = await AsyncStorage.getItem('@user');
+
+    if (user) {
+      // add user reducer
+      dispatch(updateUser(JSON.parse(user)));
+
+      navigator.replace('Home');
+    }
+  };
+
+  useEffect(() => {}, []);
 
   return (
     <Container color="info50" justify="flex-end">
