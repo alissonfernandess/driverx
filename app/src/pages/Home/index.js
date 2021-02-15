@@ -18,7 +18,7 @@ import {
   PulseCircle,
 } from '../../styles';
 
-const Home = () => {
+const Home = ({navigation}) => {
   // pegando o estado no reducer
   const {user} = useSelector((state) => state.app);
   const type = 'M';
@@ -95,7 +95,13 @@ const Home = () => {
               <SubTitle>Olá, Alisson Fernandes</SubTitle>
               <Title>Para onde você quer ir?</Title>
               <Spacer />
-              <Input placeholder="Procure um destino..." />
+              <TouchableOpacity
+                style={{width: '100%'}}
+                onPress={() => {
+                  navigation.navigate('Ride');
+                }}>
+                <Input editable={false} placeholder="Procure um destino..." />
+              </TouchableOpacity>
             </Container>
           )}
 
