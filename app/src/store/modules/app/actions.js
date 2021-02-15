@@ -15,3 +15,7 @@ export function checkUser() {
 export function updateCar(car) {
   return {type: types.UPDATE_CAR, car};
 }
+
+export function updatePayment(payment) {
+  return {type: types.UPDATE_PAYMENT, payment};
+}
