@@ -1,6 +1,8 @@
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 
+import {useSelector} from 'react-redux';
+
 import {
   Container,
   Map,
@@ -17,6 +19,8 @@ import {
 } from '../../styles';
 
 const Home = () => {
+  // pegando o estado no reducer
+  const {user} = useSelector((state) => state.app);
   const type = 'M';
   const status = 'C'; //S = SEM CORRIDA, I = INFORMAÇÕES, P = PESQUISA, C = CORRIDA
 
@@ -42,19 +46,17 @@ const Home = () => {
         style={{height: '100%'}}>
         {/* AVATAR */}
         <Container height={100} justify="flex-start" align="flex-start">
-          {status === 'S' ||
-            (type === 'M' && (
-              <TouchableOpacity>
-                <Avatar
-                  source={{
-                    uri:
-                      'https://img.etimg.com/thumb/width-640,height-480,imgsize-436664,resizemode-1,msid-72360263/magazines/panache/joker-fame-joaquin-phoenix-a-vegan-since-3-named-petas-person-of-the-year/joaquin-phoenix-recently-appeared-in-petas-we-are-all-animals-billboards-in-times-square-and-on-sunset-billboard-as-he-promoted-legislation-to-ban-travelling-wild-animal-circuses-.jpg',
-                  }}
-                />
-              </TouchableOpacity>
-            ))}
+          {status === 'S' && (
+            <TouchableOpacity>
+              <Avatar
+                source={{
+                  uri: `https://graph.facebook.com/${user.fbId}/picture?type=large&access_token=${user.accessToken}`,
+                }}
+              />
+            </TouchableOpacity>
+          )}
 
-          {status !== 'S' && type === 'P' && (
+          {status !== 'S' && user.tipo === 'P' && (
             <Container elevation={50} justify="flex-end" color="light">
               <Container padding={20}>
                 <Container justify="flex-start" row>
@@ -75,7 +77,7 @@ const Home = () => {
         </Container>
 
         {/* PASSAGEIRO PROCURANDO CORRIDA */}
-        {status === 'P' && type === 'P' && (
+        {status === 'P' && user.tipo === 'P' && (
           <Container padding={20} zIndex={-1}>
             <PulseCircle
               numPulses={3}
@@ -88,7 +90,7 @@ const Home = () => {
 
         <Container elevation={50} height={150} color="light">
           {/* PASSAGEIRO SEM CORRIDA */}
-          {type === 'P' && status === 'S' && (
+          {user.tipo === 'P' && status === 'S' && (
             <Container justify="flex-start" aling="flex-start" padding={20}>
               <SubTitle>Olá, Alisson Fernandes</SubTitle>
               <Title>Para onde você quer ir?</Title>
@@ -98,7 +100,7 @@ const Home = () => {
           )}
 
           {/* PASSAGEIRO INFORMAÇÕES DA CORRIDA */}
-          {type === 'P' && (status === 'I' || status === 'P') && (
+          {user.tipo === 'P' && (status === 'I' || status === 'P') && (
             <Container justify="flex-end" aling="flex-start">
               <Container padding={20}>
                 <SubTitle>Driverx Convencional</SubTitle>
@@ -122,7 +124,7 @@ const Home = () => {
           )}
 
           {/* PASSAGEIRO EM CORRIDA */}
-          {type === 'P' && status === 'C' && (
+          {user.tipo === 'P' && status === 'C' && (
             <Container border="primary" justify="flex-end" align="flex-start">
               <Container row padding={20}>
                 <Container align="flex-start" row>
@@ -154,7 +156,7 @@ const Home = () => {
           )}
 
           {/* MOTORISTA SEM CORRIDA */}
-          {type === 'M' && status === 'S' && (
+          {user.tipo === 'M' && status === 'S' && (
             <Container>
               <SubTitle>Olá, João</SubTitle>
               <Title>Nenhuma corrida encontrada.</Title>
@@ -162,7 +164,7 @@ const Home = () => {
           )}
 
           {/* MOTORISTA ESTÁ EM CORRIDA */}
-          {type === 'M' && status === 'C' && (
+          {user.tipo === 'M' && status === 'C' && (
             <Container border="primary" justify="flex-end" align="flex-start">
               <Container row padding={20}>
                 <Container align="flex-start" row>
