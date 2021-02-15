@@ -37,4 +37,37 @@ export function* checkUser() {
   }
 }
 
-export default all([takeLatest(types.CHECK_USER, checkUser)]);
+export function* createUser() {
+  try {
+    // get INITIAL_STATE
+    const {user, paymentMethod, car} = yield select((state) => state.app);
+
+    const response = yield call(api.post, '/signup', {
+      user,
+      paymentMethod,
+      car,
+    });
+
+    const res = response.data;
+
+    if (res.error) {
+      alert(res.message);
+      return false;
+    }
+
+    // update user reducer
+    yield put(updateUser(res.user));
+
+    // save user AsyncStorage
+    yield call(AsyncStorage.setItem, '@user', JSON.stringify(res.user));
+
+    navigate('Home');
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+export default all([
+  takeLatest(types.CHECK_USER, checkUser),
+  takeLatest(types.CREATE_USER, createUser),
+]);
