@@ -46,7 +46,18 @@ const Payment = () => {
 
       <Container>
         <Spacer height={100} />
-        <CreditCardInput requiresName />
+        <CreditCardInput
+          requiresName
+          onChange={(e) => {
+            const {number, expiry, cvc, name} = e.values;
+            setPayment({
+              numero: number,
+              nome: name,
+              validade: expiry,
+              cvv: cvc,
+            });
+          }}
+        />
       </Container>
 
       {visible && (
