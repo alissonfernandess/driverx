@@ -1,6 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {Keyboard} from 'react-native';
 
+import {useDispatch} from 'react-redux';
+import {
+  updateCar,
+  createUser,
+  updateUser,
+} from '../../store/modules/app/actions';
+
 import {
   Container,
   Title,
@@ -12,8 +19,22 @@ import {
 } from '../../styles';
 
 const Car = () => {
+  const dispatch = useDispatch();
+
   // estado para visualizar o botao
   const [visible, setVisible] = useState(true);
+
+  const [car, setCar] = useState({
+    placa: null,
+    marca: null,
+    modelo: null,
+    cor: null,
+  });
+
+  const signIn = () => {
+    dispatch(updateCar(car));
+    dispatch(createUser());
+  };
 
   // ao carregar verficar o estado do botao
   useEffect(() => {
@@ -40,11 +61,29 @@ const Car = () => {
 
       <Container justify="flex-start">
         <Spacer height={50} />
-        <Input placeholder="Placa do veículo" />
+        <Input
+          placeholder="Placa do veículo"
+          onChangeText={(placa) => setCar({...car, placa})}
+          value={car.placa}
+        />
         <Spacer />
-        <Input placeholder="Modelo do veículo" />
+        <Input
+          placeholder="Marca do veículo"
+          onChangeText={(marca) => setCar({...car, marca})}
+          value={car.marca}
+        />
         <Spacer />
-        <Input placeholder="Cor do veículo" />
+        <Input
+          placeholder="Modelo do veículo"
+          onChangeText={(modelo) => setCar({...car, modelo})}
+          value={car.modelo}
+        />
+        <Spacer />
+        <Input
+          placeholder="Cor do veículo"
+          onChangeText={(cor) => setCar({...car, cor})}
+          value={car.cor}
+        />
       </Container>
 
       {visible && (
