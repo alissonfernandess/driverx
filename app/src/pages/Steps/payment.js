@@ -2,6 +2,9 @@ import React, {useState, useEffect} from 'react';
 import {Keyboard} from 'react-native';
 import {CreditCardInput} from 'react-native-credit-card-input';
 
+import {useDispatch} from 'react-redux';
+import {updatePayment, createUser} from '../../store/modules/app/actions';
+
 import {
   Container,
   Title,
@@ -12,6 +15,8 @@ import {
 } from '../../styles';
 
 const Payment = () => {
+  const dispatch = useDispatch();
+
   // estado para visualizar o botao
   const [visible, setVisible] = useState(true);
   const [payment, setPayment] = useState({
@@ -20,6 +25,11 @@ const Payment = () => {
     validade: null,
     cvv: null,
   });
+
+  const singIn = () => {
+    dispatch(updatePayment(payment));
+    dispatch(createUser());
+  };
 
   // ao carregar verficar o estado do botao
   useEffect(() => {
@@ -62,7 +72,7 @@ const Payment = () => {
 
       {visible && (
         <Container height={70} justify="flex-end">
-          <Button>
+          <Button onPress={() => singIn()}>
             <ButtonText>Comece a user</ButtonText>
           </Button>
         </Container>
