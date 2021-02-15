@@ -25,6 +25,11 @@ function app(state = INITIAL_STATE, action) {
         draft.car = {...state.car, ...action.car};
       });
     }
+    case types.UPDATE_PAYMENT: {
+      return produce(state, (draft) => {
+        draft.paymentMethod = {...state.paymentMethod, ...action.payment};
+      });
+    }
 
     default:
       return state;
