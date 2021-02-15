@@ -14,6 +14,12 @@ import {
 const Payment = () => {
   // estado para visualizar o botao
   const [visible, setVisible] = useState(true);
+  const [payment, setPayment] = useState({
+    nome: null,
+    numero: null,
+    validade: null,
+    cvv: null,
+  });
 
   // ao carregar verficar o estado do botao
   useEffect(() => {
