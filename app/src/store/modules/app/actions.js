@@ -7,6 +7,11 @@ export function updateUser(user) {
 export function createUser() {
   return {type: types.CREATE_USER};
 }
+
 export function checkUser() {
   return {type: types.CHECK_USER};
+}
+
+export function updateCar(car) {
+  return {type: types.UPDATE_CAR, car};
 }
