@@ -3,6 +3,9 @@ import {Keyboard} from 'react-native';
 
 import api from '../../services/api';
 
+import {useDispatch} from 'react-redux';
+import {getRideInfos} from '../../store/modules/app/actions';
+
 import {
   Container,
   Title,
@@ -15,6 +18,8 @@ import {
 } from '../../styles';
 
 const Ride = () => {
+  const dispatch = useDispatch();
+
   // estado para visualizar o botao
   const [visible, setVisible] = useState(true);
   const [list, setList] = useState([]);
@@ -36,6 +41,10 @@ const Ride = () => {
     } catch (err) {
       alert(err.message);
     }
+  };
+
+  const getRide = () => {
+    dispatch(getRideInfos(origin.place_id, destination.place_id));
   };
 
   // ao carregar verficar o estado do botao
@@ -98,7 +107,7 @@ const Ride = () => {
 
       {visible && (
         <Container height={70} justify="flex-end">
-          <Button>
+          <Button onPress={() => getRide()}>
             <ButtonText>Comece a user</ButtonText>
           </Button>
         </Container>
