@@ -11,6 +11,7 @@ const INITIAL_STATE = {
   },
   car: {placa: null, marca: null, modelo: null, cor: null},
   paymentMethod: {nome: null, numero: null, validade: null, cvv: null},
+  ride: null,
 };
 
 function app(state = INITIAL_STATE, action) {
@@ -28,6 +29,11 @@ function app(state = INITIAL_STATE, action) {
     case types.UPDATE_PAYMENT: {
       return produce(state, (draft) => {
         draft.paymentMethod = {...state.paymentMethod, ...action.payment};
+      });
+    }
+    case types.UPDATE_RIDE: {
+      return produce(state, (draft) => {
+        draft.ride = {...state.ride, ...action.ride};
       });
     }
 
