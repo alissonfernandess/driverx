@@ -67,7 +67,25 @@ export function* createUser() {
   }
 }
 
+export function* getRideInfos({origin, destination}) {
+  try {
+    const response = yield call(api.post, '/pre-ride', {origin, destination});
+    const res = response.data;
+
+    if (res.error) {
+      alert(res.message);
+      return false;
+    }
+
+    yield put(updateRide({info: res.info}));
+    navigate('Home');
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
 export default all([
   takeLatest(types.CHECK_USER, checkUser),
   takeLatest(types.CREATE_USER, createUser),
+  takeLatest(types.GET_RIDE_INFOS, getRideInfos),
 ]);
