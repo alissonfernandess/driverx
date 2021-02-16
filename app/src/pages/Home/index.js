@@ -3,6 +3,12 @@ import {TouchableOpacity} from 'react-native';
 
 import {useSelector} from 'react-redux';
 
+import {Marker, Polyline} from 'react-native-maps';
+
+import initialMarker from '../../assets/initial-marker.png';
+import finalMarker from '../../assets/final-marker.png';
+import driverIcon from '../../assets/driver.png';
+
 import {
   Container,
   Map,
@@ -20,9 +26,18 @@ import {
 
 const Home = ({navigation}) => {
   // pegando o estado no reducer
-  const {user} = useSelector((state) => state.app);
-  const type = 'M';
-  const status = 'C'; //S = SEM CORRIDA, I = INFORMAÇÕES, P = PESQUISA, C = CORRIDA
+  const {user, ride} = useSelector((state) => state.app);
+  const rideStatus = () => {
+    if (ride?.user?._id) {
+      if (ride?.driver?._id) {
+        return 'inRide';
+      } else {
+        return 'inSearch';
+      }
+    }
+
+    return 'empty';
+  };
 
   return (
     <Container>
@@ -33,8 +48,26 @@ const Home = ({navigation}) => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
-        disabled={status === 'P'}
-      />
+        disabled={rideStatus() === 'inSearch'}>
+        {/* EXIBI A ROUTA NO MAP */}
+        {ride?.info?.route && (
+          <>
+            <Polyline
+              coordinates={ride?.info?.route}
+              strokeWidth={4}
+              strokeColor="#000"
+            />
+
+            <Marker coordinate={ride?.info?.route[0]}>
+              <Avatar source={initialMarker} small />
+            </Marker>
+            <Marker
+              coordinate={ride?.info?.route[ride?.info?.route.length - 1]}>
+              <Avatar source={finalMarker} small />
+            </Marker>
+          </>
+        )}
+      </Map>
       {/* PARTE SUPERIOR */}
       <Container
         position="absolute"
@@ -46,7 +79,7 @@ const Home = ({navigation}) => {
         style={{height: '100%'}}>
         {/* AVATAR */}
         <Container height={100} justify="flex-start" align="flex-start">
-          {status === 'S' && (
+          {rideStatus() === 'empty' && !ride?.info && (
             <TouchableOpacity>
               <Avatar
                 source={{
@@ -56,17 +89,23 @@ const Home = ({navigation}) => {
             </TouchableOpacity>
           )}
 
-          {status !== 'S' && user.tipo === 'P' && (
+          {rideStatus() === 'empty' && user.tipo === 'P' && (
             <Container elevation={50} justify="flex-end" color="light">
               <Container padding={20}>
                 <Container justify="flex-start" row>
                   <Bullet />
-                  <SubTitle> Endereço de embarque completo</SubTitle>
+                  <SubTitle numberOfLines={1}>
+                    {' '}
+                    {ride?.info?.start_address}
+                  </SubTitle>
                 </Container>
                 <Spacer height={20} />
                 <Container justify="flex-start" row>
                   <Bullet destination />
-                  <SubTitle> Endereço de destino completo</SubTitle>
+                  <SubTitle numberOfLines={1}>
+                    {' '}
+                    {ride?.info?.end_address}
+                  </SubTitle>
                 </Container>
               </Container>
               <Button type="dark" compact>
@@ -77,7 +116,7 @@ const Home = ({navigation}) => {
         </Container>
 
         {/* PASSAGEIRO PROCURANDO CORRIDA */}
-        {status === 'P' && user.tipo === 'P' && (
+        {rideStatus() === 'inRide' && user.tipo === 'P' && (
           <Container padding={20} zIndex={-1}>
             <PulseCircle
               numPulses={3}
@@ -88,9 +127,9 @@ const Home = ({navigation}) => {
           </Container>
         )}
 
+        {/* PASSAGEIRO SEM CORRIDA */}
         <Container elevation={50} height={150} color="light">
-          {/* PASSAGEIRO SEM CORRIDA */}
-          {user.tipo === 'P' && status === 'S' && (
+          {user.tipo === 'P' && rideStatus() === 'empty' && !ride?.info && (
             <Container justify="flex-start" aling="flex-start" padding={20}>
               <SubTitle>Olá, Alisson Fernandes</SubTitle>
               <Title>Para onde você quer ir?</Title>
@@ -106,31 +145,33 @@ const Home = ({navigation}) => {
           )}
 
           {/* PASSAGEIRO INFORMAÇÕES DA CORRIDA */}
-          {user.tipo === 'P' && (status === 'I' || status === 'P') && (
+          {user.tipo === 'P' && rideStatus() !== 'inRide' && ride?.info && (
             <Container justify="flex-end" aling="flex-start">
               <Container padding={20}>
                 <SubTitle>Driverx Convencional</SubTitle>
                 <Spacer />
                 <Container row>
                   <Container>
-                    <Title>R$ 13,90</Title>
+                    <Title>R$ {ride?.info?.price}</Title>
                   </Container>
                   <VerticalSeparator />
                   <Container>
-                    <Title>5 mins</Title>
+                    <Title>{ride?.info?.duration?.text}</Title>
                   </Container>
                 </Container>
               </Container>
-              <Button type={status === 'P' ? 'muted' : 'primary'}>
+              <Button type={rideStatus() === 'inSearch' ? 'muted' : 'primary'}>
                 <ButtonText>
-                  {status === 'P' ? 'Cancelar Driverx' : 'Chamar Driverx'}
+                  {rideStatus() === 'inSearch'
+                    ? 'Cancelar Driverx'
+                    : 'Chamar Driverx'}
                 </ButtonText>
               </Button>
             </Container>
           )}
 
           {/* PASSAGEIRO EM CORRIDA */}
-          {user.tipo === 'P' && status === 'C' && (
+          {user.tipo === 'P' && rideStatus() === 'inRide' && (
             <Container border="primary" justify="flex-end" align="flex-start">
               <Container row padding={20}>
                 <Container align="flex-start" row>
@@ -162,7 +203,7 @@ const Home = ({navigation}) => {
           )}
 
           {/* MOTORISTA SEM CORRIDA */}
-          {user.tipo === 'M' && status === 'S' && (
+          {user.tipo === 'M' && rideStatus() === 'empty' && (
             <Container>
               <SubTitle>Olá, João</SubTitle>
               <Title>Nenhuma corrida encontrada.</Title>
@@ -170,7 +211,7 @@ const Home = ({navigation}) => {
           )}
 
           {/* MOTORISTA ESTÁ EM CORRIDA */}
-          {user.tipo === 'M' && status === 'C' && (
+          {user.tipo === 'M' && ride?.info && (
             <Container border="primary" justify="flex-end" align="flex-start">
               <Container row padding={20}>
                 <Container align="flex-start" row>
