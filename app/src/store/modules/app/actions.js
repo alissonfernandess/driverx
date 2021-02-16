@@ -19,3 +19,11 @@ export function updateCar(car) {
 export function updatePayment(payment) {
   return {type: types.UPDATE_PAYMENT, payment};
 }
+
+export function getRideInfos(origin, destination) {
+  return {type: types.GET_RIDE_INFOS, origin, destination};
+}
+
+export function updateRide(ride) {
+  return {type: types.UPDATE_RIDE, ride};
+}
