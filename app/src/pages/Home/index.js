@@ -89,7 +89,7 @@ const Home = ({navigation}) => {
             </TouchableOpacity>
           )}
 
-          {rideStatus() === 'empty' && user.tipo === 'P' && (
+          {rideStatus() !== 'empty' && user.tipo === 'P' && ride?.info && (
             <Container elevation={50} justify="flex-end" color="light">
               <Container padding={20}>
                 <Container justify="flex-start" row>
