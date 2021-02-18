@@ -196,5 +196,86 @@ router.post('/pre-ride', async (req, res) => {
   }
 })
 
+// pegar motorista num raio
+router.post('/call-ride', async (req, res) => {
+  try {
+    const { io } = req.app;
+    const { info, userId } = req.body;
+
+    // LER DADOS DO PASSAGEIRO
+    const user = await User.findById(userId).select(
+      '_id nome fbId socketId accessToken cpf email'
+    );
+
+    const drivers = await User.aggregate([
+      // ACHAR TODOS OS MOTORISTAS
+      { $match: { tipo: 'M' } },
+
+      // TODOS OS MOTORISTAS QUE NÃO ESTÃO EM CORRIDA
+      {
+        $lookup: {
+          from: 'rides', //referência da models
+          as: 'activeRides', // variavel onde salva o resultado
+          let: {
+            driverId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$driverId', '$$driverId'] },
+                    { $eq: ['$status', 'A'] },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+
+       // REMOVER OS MOTORISTAS QUE ESTÃO EM CORRIDA
+       {
+        $match: {
+          'activeRides.driverId': {
+            $exists: false,
+          },
+        },
+      },
+
+      // TODOS OS MOTORISTAS EM UM RAIO DE 5KM
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [info.route[0].latitude, info.route[0].longitude],
+          },
+          distanceField: 'location',
+          spherical: true,
+          maxDistance: 5 * 1000, // METERS
+        },
+      },
+      
+
+     
+    ]);
+
+    if (drivers.length) {
+      drivers.map((driver) => {
+        io.sockets.sockets
+          .get(driver.socketId)
+          .emit('ride-request', { info, user });
+      });
+
+      res.json({ error: false, ride: { info, user } });
+    } else {
+      res.json({ error: true, message: 'Nenhum motorista disponível' });
+    }
+  } catch (err) {
+    res.json({ error: true, message: err.message });
+  }
+});
+
+
 
 module.exports = router;
