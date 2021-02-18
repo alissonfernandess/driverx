@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {TouchableOpacity} from 'react-native';
 
 import {useSelector} from 'react-redux';
@@ -39,9 +39,31 @@ const Home = ({navigation}) => {
     return 'empty';
   };
 
+  const mapRef = useRef(null);
+
+  // auto foco no map
+  const rideStatus = () => {
+
+  }
+
+  // auto foco no map
+  useEffect(() => {
+   mapRef.current.fitToCoordinates(ride?.info?.route, {
+     options: {
+      edgePadding: {
+        top: 100,
+        right: 70,
+        bottom: 150,
+        left: 70,
+      },
+     }
+   });
+  }, [ride])
+
   return (
     <Container>
       <Map
+        ref={mapRef}
         initialRegion={{
           latitude: -30.011364,
           longitude: -51.1637373,
