@@ -10,6 +10,7 @@ import finalMarker from '../../assets/final-marker.png';
 import driverIcon from '../../assets/driver.png';
 
 import socketService from '../../services/socket';
+import apiService from '../../services/api';
 
 import {
   Container,
@@ -47,14 +48,35 @@ const Home = ({navigation}) => {
 
   // auto foco no map
   const rideStatus = () => {}
-  
+
+  // update user socketid
+  const updateSocketId = async (socketId) => {
+    try {
+      await apiService.put(`/socket/${user._id}`, {socketId});
+      console.log('socket updated');
+    } catch (error) {
+      console.log('update socketId error => ' + err.message);
+    }
+  }
+
+  // init socket client
   const initSocket = () => {
     socketRef = socketService();
 
     socketRef.current.on('connect', () => {
+      // get socketId
+      const socketId = socketRef.current.id;
+      // update user socketid
+      updateSocketId(socketId);
+
       console.log('CONECTADO');
     });
   }
+
+  // initSocket
+  useEffect(() => {
+    initSocket()
+  }, [])
 
   // auto foco no map
   useEffect(() => {
