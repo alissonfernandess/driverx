@@ -14,6 +14,10 @@ const server = http.createServer(app);
 const io = require('socket.io')(server)
 app.io = io;
 
+io.sockets.on('connection', (socket) => {
+    console.log('Conectou => ' + socket.id);
+});
+
 server.listen(app.get('port'), () => {
     console.log('Server is UP on port => ' + app.get('port'));
 })
