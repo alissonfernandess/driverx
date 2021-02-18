@@ -9,6 +9,8 @@ import initialMarker from '../../assets/initial-marker.png';
 import finalMarker from '../../assets/final-marker.png';
 import driverIcon from '../../assets/driver.png';
 
+import socketService from '../../services/socket';
+
 import {
   Container,
   Map,
@@ -39,11 +41,19 @@ const Home = ({navigation}) => {
     return 'empty';
   };
 
-  const mapRef = useRef(null);
+  // useRefs
+  const mapRef = useRef(null); 
+  const socketRef = useRef();
 
   // auto foco no map
-  const rideStatus = () => {
+  const rideStatus = () => {}
+  
+  const initSocket = () => {
+    socketRef = socketService();
 
+    socketRef.current.on('connect', () => {
+      console.log('CONECTADO');
+    });
   }
 
   // auto foco no map
